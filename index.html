@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="ko" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>단어 암기 노트</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 50: '#f0f7ff', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8' }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Font Awesome Icons & Google Fonts -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body { font-family: 'Pretendard', system-ui, -apple-system, sans-serif; }
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 99px; }
+        .dark ::-webkit-scrollbar-thumb { background: #475569; }
+
+        /* Grey Box Mask Effect */
+        .mask-box {
+            background-color: #94a3b8;
+            color: transparent !important;
+            user-select: none;
+            border-radius: 0.375rem;
+            padding: 0.1rem 0.4rem;
+            margin: 0 0.1rem;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            display: inline-block;
+            vertical-align: baseline;
+            box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.12);
+        }
+        .dark .mask-box { background-color: #475569; }
+        .mask-box:hover { background-color: #64748b; }
+        
+        .mask-box.revealed {
+            background-color: #e0f2fe !important;
+            color: #0369a1 !important;
+            font-weight: 600;
+            box-shadow: none;
+        }
+        .dark .mask-box.revealed {
+            background-color: #1e293b !important;
+            color: #38bdf8 !important;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-full flex flex-col transition-colors">
+
+    <header class="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 sticky top-0 z-20">
+        <div class="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
+            <div class="flex items-center space-x-2">
+                <i class="fa-solid fa-square-check text-blue-600 dark:text-blue-400 text-xl"></i>
+                <span class="font-bold text-base tracking-tight">단어 암기 노트</span>
+            </div>
+
+            <div class="flex items-center space-x-2">
+                <!-- User ID Sync Button -->
+                <button id="userSyncBtn" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-xs font-medium text-slate-700 dark:text-slate-200 transition">
+                    <span id="syncStatusDot" class="w-2 h-2 rounded-full bg-amber-400 animate-pulse" title="연결 확인 중..."></span>
+                    <i class="fa-solid fa-user text-blue-500"></i>
+                    <span id="userIdDisplay" class="truncate max-w-[110px]">내 아이디</span>
+                </button>
+
+                <!-- Dark Mode Toggle -->
+                <button id="themeToggle" class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700">
+                    <i class="fa-solid fa-moon dark:hidden"></i>
+                    <i class="fa-solid fa-sun hidden dark:block"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-5xl w-full mx-auto p-4 flex flex-col md:flex-row gap-5">
+        
+        <!-- Sidebar: Subjects list -->
+        <aside class="w-full md:w-56 flex-shrink-0 space-y-3">
+            <div class="flex items-center justify-between px-1">
+                <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">과목 목록</span>
+                <button id="addSubjectBtn" class="text-xs text-blue-600 dark:text-blue-400 font-semibold hover:underline">
+                    + 과목 추가
+                </button>
+            </div>
+
+            <div id="subjectList" class="space-y-1">
+                <!-- Dynamic Subjects -->
+            </div>
+        </aside>
+
+        <!-- Content Area -->
+        <section class="flex-1 min-w-0">
+            
+            <!-- Notes Dashboard Header -->
+            <div id="notesOverviewHeader" class="flex items-center justify-between mb-4 bg-white dark:bg-slate-800 p-3.5 rounded-xl border border-slate-200 dark:border-slate-700">
+                <div class="flex items-center gap-2">
+                    <h2 id="currentSubjectTitle" class="font-bold text-base text-slate-800 dark:text-slate-100">전체 과목</h2>
+                    <span id="noteCountBadge" class="text-xs px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 font-medium">0</span>
+                </div>
+
+                <button id="newNoteBtn" class="px-3.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs transition flex items-center gap-1.5 shadow-sm">
+                    <i class="fa-solid fa-plus"></i> 새 노트
+                </button>
+            </div>
+
+            <!-- Notes List Grid -->
+            <div id="notesGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <!-- Dynamic Note Cards -->
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyNotesState" class="hidden bg-white dark:bg-slate-800 rounded-xl border border-dashed border-slate-300 dark:border-slate-700 p-10 text-center">
+                <i class="fa-solid fa-pen-nib text-slate-300 dark:text-slate-600 text-3xl mb-2"></i>
+                <p class="text-sm font-semibold text-slate-600 dark:text-slate-300">작성된 노트가 없습니다</p>
+                <p class="text-xs text-slate-400 mt-1 mb-4">새 노트를 추가해 암기할 단어나 문장을 작성해보세요.</p>
+                <button id="emptyStateNewBtn" class="px-4 py-1.5 bg-blue-600 text-white rounded-lg text-xs font-semibold">
+                    첫 노트 쓰기
+                </button>
+            </div>
+
+            <div id="noteEditorPanel" class="hidden bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 flex flex-col min-h-[500px]">
+                
+                <!-- Editor Top Header -->
+                <div class="p-3 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between gap-2 bg-slate-50/50 dark:bg-slate-800/50 rounded-t-xl">
+                    <button id="closeEditorBtn" class="text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 text-xs font-semibold flex items-center gap-1">
+                        <i class="fa-solid fa-chevron-left"></i> 목록
+                    </button>
+
+                    <!-- Edit / Memorize Switcher -->
+                    <div class="flex bg-slate-200 dark:bg-slate-700 p-0.5 rounded-lg text-xs font-semibold">
+                        <button id="modeMemorizeBtn" class="px-3 py-1 rounded-md bg-blue-600 text-white transition">
+                            <i class="fa-solid fa-eye-slash mr-1"></i> 암기 가리기
+                        </button>
+                        <button id="modeEditBtn" class="px-3 py-1 rounded-md text-slate-600 dark:text-slate-300 transition">
+                            <i class="fa-solid fa-pen mr-1"></i> 편집하기
+                        </button>
+                    </div>
+
+                    <div class="flex items-center gap-1">
+                        <button id="deleteNoteBtn" class="p-1.5 text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 rounded-lg text-xs" title="삭제">
+                            <i class="fa-solid fa-trash-can"></i>
+                        </button>
+                        <button id="saveNoteBtn" class="px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold rounded-lg transition">
+                            저장
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Note Meta Inputs -->
+                <div class="p-4 border-b border-slate-100 dark:border-slate-700/60 space-y-2">
+                    <input id="noteTitleInput" type="text" placeholder="노트 제목을 입력하세요" class="w-full text-lg font-bold bg-transparent border-none focus:outline-none text-slate-800 dark:text-slate-100 placeholder-slate-400">
+                    
+                    <div class="flex items-center justify-between text-xs text-slate-400">
+                        <div class="flex items-center gap-1.5">
+                            <span>과목:</span>
+                            <select id="noteSubjectSelect" class="bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded px-2 py-0.5 border-none font-medium">
+                                <!-- Dynamic subjects -->
+                            </select>
+                        </div>
+                        <span id="wordCountDisplay">0자</span>
+                    </div>
+                </div>
+
+                <!-- Memorize Action Bar (Shown in Memorize Mode) -->
+                <div id="memorizeToolbar" class="px-4 py-2 bg-slate-100 dark:bg-slate-900 border-b border-slate-200 dark:border-slate-700 flex items-center justify-between text-xs">
+                    <span class="text-slate-500 font-medium hidden sm:inline">회색 상자를 누르면 내용이 드러납니다</span>
+                    <div class="flex items-center gap-1.5 ml-auto">
+                        <button id="hideAllMasksBtn" class="px-2.5 py-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded text-slate-700 dark:text-slate-300 font-medium hover:bg-slate-50">
+                            모두 가리기
+                        </button>
+                        <button id="revealAllMasksBtn" class="px-2.5 py-1 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded text-slate-700 dark:text-slate-300 font-medium hover:bg-slate-50">
+                            모두 보기
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Editor Text Area (Edit Mode) -->
+                <div id="editorContainer" class="flex-1 p-4 flex flex-col">
+                    <textarea id="noteContentInput" placeholder="암기할 단어나 문장을 자유롭게 입력하세요 (글자 수 제한 없음)&#10;&#10;[팁] [[가릴단어]] 처럼 묶으면 해당 단어만 가려집니다." class="w-full flex-1 min-h-[350px] text-sm leading-relaxed bg-transparent border-none focus:outline-none text-slate-800 dark:text-slate-100 resize-none font-mono"></textarea>
+                </div>
+
+                <!-- Masked Display Container (Memorize Mode) -->
+                <div id="memorizeContainer" class="hidden flex-1 p-5 text-sm sm:text-base leading-relaxed whitespace-pre-wrap font-sans select-none">
+                    <!-- Dynamic Masked Content -->
+                </div>
+
+            </div>
+
+        </section>
+    </main>
+
+    <div id="userSyncModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 w-full max-w-sm p-5 space-y-4">
+            <div class="flex items-center justify-between">
+                <h3 class="font-bold text-slate-800 dark:text-slate-100 text-sm">기기 동기화 아이디</h3>
+                <button id="closeUserSyncModalBtn" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <!-- Cloud status badge inside modal -->
+            <div class="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700">
+                <p id="cloudSyncStatusText" class="text-xs font-semibold text-amber-600 dark:text-amber-400 flex items-center gap-1.5">
+                    <span class="inline-block w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span> 동기화 상태 확인 중...
+                </p>
+            </div>
+
+            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                스마트폰, 태블릿, PC 등 다른 기기에서도 <b>동일한 아이디</b>를 입력하면 단어장 데이터가 실시간으로 동기화됩니다.
+            </p>
+
+            <div class="space-y-1">
+                <label class="text-[11px] font-semibold text-slate-400">현재 접속 아이디</label>
+                <div class="flex gap-1.5">
+                    <input id="modalCurrentUserId" type="text" readonly class="flex-1 px-3 py-1.5 text-xs rounded-lg bg-slate-100 dark:bg-slate-700 font-mono font-bold text-blue-600 dark:text-blue-400 border border-slate-200 dark:border-slate-600">
+                    <button id="copyUserIdBtn" class="px-3 py-1.5 bg-slate-200 dark:bg-slate-600 hover:bg-slate-300 rounded-lg text-xs font-semibold">복사</button>
+                </div>
+            </div>
+
+            <div class="space-y-1 pt-2 border-t border-slate-100 dark:border-slate-700">
+                <label class="text-[11px] font-semibold text-slate-400">다른 아이디로 불러오기 / 접속</label>
+                <div class="flex gap-1.5">
+                    <input id="inputNewUserId" type="text" placeholder="예: my-voca-123" class="flex-1 px-3 py-1.5 text-xs rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500">
+                    <button id="switchUserIdBtn" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold shrink-0">접속하기</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="subjectModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 w-full max-w-xs p-5 space-y-3">
+            <h3 class="font-bold text-slate-800 dark:text-slate-100 text-sm">새 과목 추가</h3>
+            <input id="subjectNameInput" type="text" placeholder="과목명 (예: 토익, 한국사)" class="w-full px-3 py-1.5 text-xs rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-100">
+            <div class="flex justify-end gap-1.5 pt-1">
+                <button id="cancelSubjectModalBtn" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-200 text-xs font-semibold rounded-lg">취소</button>
+                <button id="confirmSubjectModalBtn" class="px-3 py-1.5 bg-blue-600 text-white text-xs font-semibold rounded-lg">추가</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Subject Delete Modal -->
+    <div id="deleteSubjectModal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 w-full max-w-xs p-5 space-y-3">
+            <h3 class="font-bold text-slate-800 dark:text-slate-100 text-sm">과목 삭제</h3>
+            <p id="deleteSubjectMessage" class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                정말 이 과목을 삭제하시겠습니까?
+            </p>
+            <div class="flex justify-end gap-1.5 pt-1">
+                <button id="cancelDeleteSubjectBtn" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-200 text-xs font-semibold rounded-lg">취소</button>
+                <button id="confirmDeleteSubjectBtn" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold rounded-lg">삭제</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toastContainer" class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        const DEFAULT_SUBJECTS = ["전체 과목", "영어 단어", "한국사"];
+        
+        let state = {
+            userId: localStorage.getItem('voca_user_id') || ('USER-' + Math.floor(100000 + Math.random() * 900000)),
+            subjects: DEFAULT_SUBJECTS,
+            selectedSubject: "전체 과목",
+            notes: [],
+            activeNoteId: null,
+            viewMode: 'memorize',
+            dbConnected: false
+        };
+
+        let db = null;
+        let auth = null;
+        let firestoreUnsubscribe = null;
+
+        // UI status indicator helper
+        function updateSyncStatus(connected, message = '') {
+            state.dbConnected = connected;
+            const dot = document.getElementById('syncStatusDot');
+            const statusText = document.getElementById('cloudSyncStatusText');
+            
+            if (dot) {
+                if (connected) {
+                    dot.className = "w-2 h-2 rounded-full bg-emerald-500";
+                    dot.title = "클라우드 실시간 동기화 완료";
+                } else {
+                    dot.className = "w-2 h-2 rounded-full bg-rose-500";
+                    dot.title = message || "로컬 저장 모드";
+                }
+            }
+            if (statusText) {
+                if (connected) {
+                    statusText.className = "text-xs font-semibold text-emerald-600 dark:text-emerald-400 flex items-center gap-1.5";
+                    statusText.innerHTML = `<span class="inline-block w-2 h-2 rounded-full bg-emerald-500"></span> 클라우드와 실시간 동기화 중`;
+                } else {
+                    statusText.className = "text-xs font-semibold text-rose-600 dark:text-rose-400 flex items-center gap-1.5";
+                    statusText.innerHTML = `<span class="inline-block w-2 h-2 rounded-full bg-rose-500"></span> 로컬 모드 (${message || '서버 연결 안 됨'})`;
+                }
+            }
+        }
+
+        // Init Cloud or Local Storage
+        async function initApp() {
+            localStorage.setItem('voca_user_id', state.userId);
+            loadFromLocalStorage();
+
+            try {
+                const appId = typeof __app_id !== 'undefined' ? __app_id : 'voca-memo-app';
+                if (typeof __firebase_config !== 'undefined' && __firebase_config) {
+                    const firebaseConfig = JSON.parse(__firebase_config);
+                    const app = initializeApp(firebaseConfig);
+                    auth = getAuth(app);
+                    db = getFirestore(app);
+
+                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                        await signInWithCustomToken(auth, __initial_auth_token);
+                    } else {
+                        await signInAnonymously(auth);
+                    }
+                    
+                    if (auth.currentUser) {
+                        setupCloudSync(appId);
+                    } else {
+                        updateSyncStatus(false, "인증 안 됨");
+                    }
+                } else {
+                    updateSyncStatus(false, "클라우드 설정 없음");
+                }
+            } catch (err) {
+                console.warn("Cloud connection error, using local storage:", err);
+                updateSyncStatus(false, "오류 발생");
+            }
+            renderAll();
+        }
+
+        function setupCloudSync(appId) {
+            if (!db || !auth || !auth.currentUser) {
+                updateSyncStatus(false, "인증 필요");
+                return;
+            }
+            
+            if (firestoreUnsubscribe) {
+                firestoreUnsubscribe();
+                firestoreUnsubscribe = null;
+            }
+
+            const userDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'vocab_users', state.userId);
+
+            firestoreUnsubscribe = onSnapshot(userDocRef, (docSnap) => {
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    if (data.notes && Array.isArray(data.notes)) state.notes = data.notes;
+                    if (data.subjects && Array.isArray(data.subjects)) state.subjects = data.subjects;
+                    saveToLocalStorage();
+                    renderAll();
+                    updateSyncStatus(true);
+                } else {
+                    // Initialize cloud document with local state for new ID
+                    saveDataToCloud();
+                    updateSyncStatus(true);
+                }
+            }, (err) => {
+                console.error("Sync error:", err);
+                updateSyncStatus(false, "실시간 연결 제한");
+            });
+        }
+
+        async function saveDataToCloud() {
+            saveToLocalStorage();
+            if (!db || !auth || !auth.currentUser || !state.dbConnected) return;
+
+            try {
+                const appId = typeof __app_id !== 'undefined' ? __app_id : 'voca-memo-app';
+                const userDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'vocab_users', state.userId);
+                await setDoc(userDocRef, {
+                    userId: state.userId,
+                    subjects: state.subjects,
+                    notes: state.notes,
+                    updatedAt: new Date().toISOString()
+                }, { merge: true });
+            } catch (err) {
+                console.error("Cloud save failed:", err);
+            }
+        }
+
+        function saveToLocalStorage() {
+            localStorage.setItem('voca_user_id', state.userId);
+            localStorage.setItem('voca_subjects_' + state.userId, JSON.stringify(state.subjects));
+            localStorage.setItem('voca_notes_' + state.userId, JSON.stringify(state.notes));
+        }
+
+        function loadFromLocalStorage() {
+            const savedSubjects = localStorage.getItem('voca_subjects_' + state.userId);
+            if (savedSubjects) {
+                try { state.subjects = JSON.parse(savedSubjects); } catch(e) { state.subjects = DEFAULT_SUBJECTS; }
+            } else {
+                state.subjects = DEFAULT_SUBJECTS;
+            }
+
+            const savedNotes = localStorage.getItem('voca_notes_' + state.userId);
+            if (savedNotes) {
+                try { state.notes = JSON.parse(savedNotes); } catch(e) { state.notes = []; }
+            } else {
+                state.notes = [
+                    {
+                        id: 'sample-1',
+                        subject: '영어 단어',
+                        title: 'Day 01 필수 영단어',
+                        content: `apple : [[사과]]\nbanana : [[바나나]]\nmeticulous : [[꼼꼼한, 세심한]]\n\nThe scientist conducted a [[meticulous]] study.`,
+                        updatedAt: new Date().toISOString()
+                    }
+                ];
+            }
+        }
+
+        // DOM elements & Rendering
+        const userIdDisplay = document.getElementById('userIdDisplay');
+        const subjectListEl = document.getElementById('subjectList');
+        const currentSubjectTitle = document.getElementById('currentSubjectTitle');
+        const noteCountBadge = document.getElementById('noteCountBadge');
+        const notesGrid = document.getElementById('notesGrid');
+        const emptyNotesState = document.getElementById('emptyNotesState');
+        const notesOverviewHeader = document.getElementById('notesOverviewHeader');
+
+        const noteEditorPanel = document.getElementById('noteEditorPanel');
+        const noteTitleInput = document.getElementById('noteTitleInput');
+        const noteSubjectSelect = document.getElementById('noteSubjectSelect');
+        const noteContentInput = document.getElementById('noteContentInput');
+        const wordCountDisplay = document.getElementById('wordCountDisplay');
+
+        const memorizeToolbar = document.getElementById('memorizeToolbar');
+        const editorContainer = document.getElementById('editorContainer');
+        const memorizeContainer = document.getElementById('memorizeContainer');
+        const modeEditBtn = document.getElementById('modeEditBtn');
+        const modeMemorizeBtn = document.getElementById('modeMemorizeBtn');
+
+        function renderAll() {
+            userIdDisplay.textContent = state.userId;
+            renderSubjects();
+            renderNotesList();
+            renderSubjectSelectOptions();
+        }
+
+        function renderSubjects() {
+            subjectListEl.innerHTML = '';
+            state.subjects.forEach(sub => {
+                const isActive = sub === state.selectedSubject;
+                const count = sub === "전체 과목" ? state.notes.length : state.notes.filter(n => n.subject === sub).length;
+
+                const item = document.createElement('div');
+                item.className = `group w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-semibold transition cursor-pointer ${
+                    isActive ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                }`;
+
+                const isDefault = sub === "전체 과목";
+
+                item.innerHTML = `
+                    <span class="truncate flex-1 text-left">${escapeHtml(sub)}</span>
+                    <div class="flex items-center gap-1.5">
+                        <span class="px-1.5 py-0.2 rounded-full text-[10px] ${isActive ? 'bg-blue-700 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-500'}">${count}</span>
+                        ${!isDefault ? `
+                            <button class="delete-sub-btn opacity-0 group-hover:opacity-100 text-slate-400 hover:text-rose-500 dark:hover:text-rose-400 p-0.5 rounded transition" title="과목 삭제">
+                                <i class="fa-solid fa-trash-can text-[11px]"></i>
+                            </button>
+                        ` : ''}
+                    </div>
+                `;
+
+                item.onclick = (e) => {
+                    if (e.target.closest('.delete-sub-btn')) {
+                        e.stopPropagation();
+                        promptDeleteSubject(sub);
+                        return;
+                    }
+                    state.selectedSubject = sub;
+                    closeEditor();
+                    renderAll();
+                };
+
+                subjectListEl.appendChild(item);
+            });
+        }
+
+        function renderSubjectSelectOptions() {
+            noteSubjectSelect.innerHTML = '';
+            state.subjects.filter(s => s !== "전체 과목").forEach(sub => {
+                const opt = document.createElement('option');
+                opt.value = sub;
+                opt.textContent = sub;
+                noteSubjectSelect.appendChild(opt);
+            });
+        }
+
+        function renderNotesList() {
+            currentSubjectTitle.textContent = state.selectedSubject;
+            
+            let filtered = state.notes;
+            if (state.selectedSubject !== "전체 과목") {
+                filtered = filtered.filter(n => n.subject === state.selectedSubject);
+            }
+
+            noteCountBadge.textContent = `${filtered.length}`;
+
+            if (filtered.length === 0) {
+                notesGrid.innerHTML = '';
+                notesGrid.classList.add('hidden');
+                emptyNotesState.classList.remove('hidden');
+                return;
+            }
+
+            emptyNotesState.classList.add('hidden');
+            notesGrid.classList.remove('hidden');
+            notesGrid.innerHTML = '';
+
+            filtered.forEach(note => {
+                const card = document.createElement('div');
+                card.className = "bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-blue-500 transition cursor-pointer flex flex-col justify-between gap-2";
+                
+                const charLen = note.content ? note.content.length : 0;
+                const snippet = note.content ? note.content.replace(/\[\[/g, '').replace(/\]\]/g, '').slice(0, 80) : '내용 없음';
+
+                card.innerHTML = `
+                    <div>
+                        <div class="flex items-center justify-between text-[11px] text-slate-400 mb-1">
+                            <span class="font-semibold text-blue-600 dark:text-blue-400">${escapeHtml(note.subject || '일반')}</span>
+                            <span>${charLen}자</span>
+                        </div>
+                        <h3 class="font-bold text-slate-800 dark:text-slate-100 text-sm truncate">${escapeHtml(note.title || '제목 없음')}</h3>
+                        <p class="text-xs text-slate-500 dark:text-slate-400 line-clamp-2 mt-1 leading-relaxed">${escapeHtml(snippet)}</p>
+                    </div>
+                `;
+
+                card.onclick = () => openNoteEditor(note.id);
+                notesGrid.appendChild(card);
+            });
+        }
+
+        // Editor & Memorize view operations
+        function openNoteEditor(noteId) {
+            state.activeNoteId = noteId;
+            const note = state.notes.find(n => n.id === noteId);
+            if (!note) return;
+
+            noteTitleInput.value = note.title || '';
+            noteContentInput.value = note.content || '';
+            
+            if (note.subject && state.subjects.includes(note.subject)) {
+                noteSubjectSelect.value = note.subject;
+            } else if (state.subjects.length > 1) {
+                noteSubjectSelect.value = state.subjects[1];
+            }
+
+            updateWordCount();
+            setMode('memorize');
+
+            notesOverviewHeader.classList.add('hidden');
+            notesGrid.classList.add('hidden');
+            emptyNotesState.classList.add('hidden');
+            noteEditorPanel.classList.remove('hidden');
+        }
+
+        function createNewNote() {
+            const defaultSubject = state.selectedSubject !== "전체 과목" ? state.selectedSubject : (state.subjects[1] || "기타");
+            const newNote = {
+                id: 'note-' + Date.now(),
+                subject: defaultSubject,
+                title: '',
+                content: '',
+                updatedAt: new Date().toISOString()
+            };
+
+            state.notes.unshift(newNote);
+            saveDataToCloud();
+            openNoteEditor(newNote.id);
+            setMode('edit');
+            noteTitleInput.focus();
+        }
+
+        function closeEditor() {
+            state.activeNoteId = null;
+            noteEditorPanel.classList.add('hidden');
+            notesOverviewHeader.classList.remove('hidden');
+            renderNotesList();
+        }
+
+        function setMode(mode) {
+            state.viewMode = mode;
+            if (mode === 'edit') {
+                modeEditBtn.className = "px-3 py-1 rounded-md bg-blue-600 text-white transition";
+                modeMemorizeBtn.className = "px-3 py-1 rounded-md text-slate-600 dark:text-slate-300 transition";
+                editorContainer.classList.remove('hidden');
+                memorizeContainer.classList.add('hidden');
+                memorizeToolbar.classList.add('hidden');
+            } else {
+                modeMemorizeBtn.className = "px-3 py-1 rounded-md bg-blue-600 text-white transition";
+                modeEditBtn.className = "px-3 py-1 rounded-md text-slate-600 dark:text-slate-300 transition";
+                editorContainer.classList.add('hidden');
+                memorizeContainer.classList.remove('hidden');
+                memorizeToolbar.classList.remove('hidden');
+                renderMaskedContent();
+            }
+        }
+
+        // Render masked grey boxes
+        function renderMaskedContent() {
+            const rawContent = noteContentInput.value;
+            memorizeContainer.innerHTML = '';
+
+            if (!rawContent.trim()) {
+                memorizeContainer.innerHTML = `<div class="text-slate-400 text-center py-10">내용이 없습니다. 편집하기 모드에서 텍스트를 입력해주세요.</div>`;
+                return;
+            }
+
+            // Check if brackets [[ ]] exist
+            const hasBrackets = /\[\[(.*?)\]\]/.test(rawContent);
+
+            if (hasBrackets) {
+                // Bracket specific mask mode
+                const regex = /\[\[(.*?)\]\]/g;
+                let lastIdx = 0;
+                let match;
+
+                while ((match = regex.exec(rawContent)) !== null) {
+                    if (match.index > lastIdx) {
+                        memorizeContainer.appendChild(document.createTextNode(rawContent.substring(lastIdx, match.index)));
+                    }
+                    const maskSpan = createMaskBoxElement(match[1]);
+                    memorizeContainer.appendChild(maskSpan);
+                    lastIdx = regex.lastIndex;
+                }
+                if (lastIdx < rawContent.length) {
+                    memorizeContainer.appendChild(document.createTextNode(rawContent.substring(lastIdx)));
+                }
+            } else {
+                // Word by word mask mode
+                const tokens = rawContent.split(/(\s+)/);
+                tokens.forEach(token => {
+                    if (/^\s+$/.test(token)) {
+                        memorizeContainer.appendChild(document.createTextNode(token));
+                    } else if (token.length > 0) {
+                        const wordSpan = createMaskBoxElement(token);
+                        memorizeContainer.appendChild(wordSpan);
+                    }
+                });
+            }
+        }
+
+        function createMaskBoxElement(text) {
+            const span = document.createElement('span');
+            span.className = 'mask-box';
+            span.textContent = text;
+            span.title = "클릭하여 확인 / 다시 가리기";
+
+            span.onclick = (e) => {
+                e.stopPropagation();
+                span.classList.toggle('revealed');
+            };
+            return span;
+        }
+
+        function saveCurrentNote() {
+            if (!state.activeNoteId) return;
+            const noteIndex = state.notes.findIndex(n => n.id === state.activeNoteId);
+            if (noteIndex === -1) return;
+
+            state.notes[noteIndex] = {
+                ...state.notes[noteIndex],
+                title: noteTitleInput.value.trim() || '제목 없는 노트',
+                content: noteContentInput.value,
+                subject: noteSubjectSelect.value,
+                updatedAt: new Date().toISOString()
+            };
+
+            saveDataToCloud();
+            showToast("저장되었습니다!", "success");
+            if (state.viewMode === 'memorize') renderMaskedContent();
+        }
+
+        function deleteCurrentNote() {
+            if (!state.activeNoteId) return;
+            state.notes = state.notes.filter(n => n.id !== state.activeNoteId);
+            saveDataToCloud();
+            closeEditor();
+            showToast("노트가 삭제되었습니다.", "info");
+        }
+
+        function updateWordCount() {
+            wordCountDisplay.textContent = `${noteContentInput.value.length.toLocaleString()}자`;
+        }
+
+        // Modals & User ID Sync
+        const userSyncModal = document.getElementById('userSyncModal');
+        const modalCurrentUserId = document.getElementById('modalCurrentUserId');
+        const inputNewUserId = document.getElementById('inputNewUserId');
+
+        document.getElementById('userSyncBtn').onclick = () => {
+            modalCurrentUserId.value = state.userId;
+            inputNewUserId.value = '';
+            userSyncModal.classList.remove('hidden');
+        };
+
+        document.getElementById('closeUserSyncModalBtn').onclick = () => userSyncModal.classList.add('hidden');
+
+        document.getElementById('copyUserIdBtn').onclick = () => {
+            navigator.clipboard.writeText(state.userId).then(() => showToast("아이디가 복사되었습니다!", "success"));
+        };
+
+        document.getElementById('switchUserIdBtn').onclick = () => {
+            const newId = inputNewUserId.value.trim();
+            if (!newId) {
+                showToast("아이디를 입력해주세요.", "info");
+                return;
+            }
+
+            if (newId === state.userId) {
+                showToast("현재 접속 중인 아이디입니다.", "info");
+                userSyncModal.classList.add('hidden');
+                return;
+            }
+
+            state.userId = newId;
+            localStorage.setItem('voca_user_id', state.userId);
+            
+            // Close active note editor if open
+            if (state.activeNoteId) {
+                closeEditor();
+            }
+
+            // Load local cache for this ID first
+            loadFromLocalStorage();
+            renderAll();
+
+            if (db && auth && auth.currentUser) {
+                const appId = typeof __app_id !== 'undefined' ? __app_id : 'voca-memo-app';
+                setupCloudSync(appId);
+                showToast(`'${newId}' 아이디로 전환되었습니다.`, "success");
+            } else {
+                showToast(`'${newId}' 아이디로 접속 (로컬 저장)`, "info");
+            }
+
+            userSyncModal.classList.add('hidden');
+        };
+
+        // Subject Modal
+        const subjectModal = document.getElementById('subjectModal');
+        const subjectNameInput = document.getElementById('subjectNameInput');
+
+        document.getElementById('addSubjectBtn').onclick = () => {
+            subjectNameInput.value = '';
+            subjectModal.classList.remove('hidden');
+            subjectNameInput.focus();
+        };
+
+        document.getElementById('cancelSubjectModalBtn').onclick = () => subjectModal.classList.add('hidden');
+
+        document.getElementById('confirmSubjectModalBtn').onclick = () => {
+            const name = subjectNameInput.value.trim();
+            if (!name || state.subjects.includes(name)) return;
+            state.subjects.push(name);
+            saveDataToCloud();
+            subjectModal.classList.add('hidden');
+            renderAll();
+        };
+
+        // Subject Delete Modal Logic
+        let subjectToDelete = null;
+
+        function promptDeleteSubject(subName) {
+            subjectToDelete = subName;
+            document.getElementById('deleteSubjectMessage').innerHTML = `'<span class="font-bold text-slate-800 dark:text-slate-100">${escapeHtml(subName)}</span>' 과목을 삭제하시겠습니까?<br><span class="text-[11px] text-slate-400">속한 노트는 '기타' 과목으로 변경됩니다.</span>`;
+            document.getElementById('deleteSubjectModal').classList.remove('hidden');
+        }
+
+        document.getElementById('cancelDeleteSubjectBtn').onclick = () => {
+            document.getElementById('deleteSubjectModal').classList.add('hidden');
+            subjectToDelete = null;
+        };
+
+        document.getElementById('confirmDeleteSubjectBtn').onclick = () => {
+            if (!subjectToDelete) return;
+
+            const targetSub = subjectToDelete;
+            state.subjects = state.subjects.filter(s => s !== targetSub);
+
+            // Move notes belonging to deleted subject to '기타'
+            const affectedNotes = state.notes.filter(n => n.subject === targetSub);
+            if (affectedNotes.length > 0) {
+                if (!state.subjects.includes("기타")) {
+                    state.subjects.push("기타");
+                }
+                affectedNotes.forEach(n => {
+                    n.subject = "기타";
+                });
+            }
+
+            if (state.selectedSubject === targetSub) {
+                state.selectedSubject = "전체 과목";
+            }
+
+            subjectToDelete = null;
+            document.getElementById('deleteSubjectModal').classList.add('hidden');
+            saveDataToCloud();
+            renderAll();
+            showToast("과목이 삭제되었습니다.", "info");
+        };
+
+        // Dark mode
+        document.getElementById('themeToggle').onclick = () => {
+            document.documentElement.classList.toggle('dark');
+            localStorage.setItem('voca_theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
+        };
+
+        if (localStorage.getItem('voca_theme') === 'dark' || (!('voca_theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        }
+
+        // Toasts
+        function showToast(msg, type = "info") {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            toast.className = `px-3.5 py-2 rounded-lg text-xs font-semibold shadow-md transition-all duration-300 opacity-0 translate-y-2 pointer-events-auto ${
+                type === 'success' ? 'bg-emerald-600 text-white' : 'bg-slate-800 text-white'
+            }`;
+            toast.textContent = msg;
+            container.appendChild(toast);
+            setTimeout(() => toast.classList.remove('opacity-0', 'translate-y-2'), 10);
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 2500);
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+        }
+
+        // Event Listeners
+        document.getElementById('newNoteBtn').onclick = createNewNote;
+        document.getElementById('emptyStateNewBtn').onclick = createNewNote;
+        document.getElementById('closeEditorBtn').onclick = closeEditor;
+        document.getElementById('saveNoteBtn').onclick = saveCurrentNote;
+        document.getElementById('deleteNoteBtn').onclick = deleteCurrentNote;
+
+        modeEditBtn.onclick = () => setMode('edit');
+        modeMemorizeBtn.onclick = () => setMode('memorize');
+
+        document.getElementById('hideAllMasksBtn').onclick = () => {
+            document.querySelectorAll('#memorizeContainer .mask-box').forEach(el => el.classList.remove('revealed'));
+        };
+
+        document.getElementById('revealAllMasksBtn').onclick = () => {
+            document.querySelectorAll('#memorizeContainer .mask-box').forEach(el => el.classList.add('revealed'));
+        };
+
+        noteContentInput.oninput = updateWordCount;
+
+        window.onload = initApp;
+    </script>
+</body>
+</html>
