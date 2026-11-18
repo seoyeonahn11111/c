@@ -12,7 +12,7 @@
             theme: {
                 extend: {
                     colors: {
-                        brand: { 50: '#f0f7ff', 500: '#3b82f6', 600: '#2563eb', 700: '#1d4ed8' }
+                        brand: { 50: '#ecfdf5', 500: '#10b981', 600: '#059669', 700: '#047857' }
                     }
                 }
             }
@@ -48,31 +48,32 @@
         .mask-box:hover { background-color: #64748b; }
         
         .mask-box.revealed {
-            background-color: #e0f2fe !important;
-            color: #0369a1 !important;
+            background-color: #d1fae5 !important;
+            color: #047857 !important;
             font-weight: 600;
             box-shadow: none;
         }
         .dark .mask-box.revealed {
             background-color: #1e293b !important;
-            color: #38bdf8 !important;
+            color: #6ee7b7 !important;
         }
     </style>
 </head>
-<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-full flex flex-col transition-colors">
+<body class="bg-[#fffdf0] dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-full flex flex-col transition-colors">
 
-    <header class="bg-white dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700 sticky top-0 z-20">
+    <header class="bg-white dark:bg-slate-800 border-b border-yellow-200/80 dark:border-slate-700 sticky top-0 z-20">
         <div class="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
             <div class="flex items-center space-x-2">
-                <i class="fa-solid fa-square-check text-blue-600 dark:text-blue-400 text-xl"></i>
+                <i class="fa-solid fa-square-check text-emerald-600 dark:text-emerald-400 text-xl"></i>
                 <span class="font-bold text-base tracking-tight">단어 암기 노트</span>
             </div>
 
             <div class="flex items-center space-x-2">
+                <a href="https://seoyeonahn11111.github.io/a/" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-50 hover:bg-emerald-100 text-xs font-semibold text-emerald-700 border border-emerald-200 transition whitespace-nowrap"><i class="fa-solid fa-calendar-check"></i><span>시험 공부 플래너</span></a>
                 <!-- User ID Sync Button -->
                 <button id="userSyncBtn" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-xs font-medium text-slate-700 dark:text-slate-200 transition">
                     <span id="syncStatusDot" class="w-2 h-2 rounded-full bg-amber-400 animate-pulse" title="연결 확인 중..."></span>
-                    <i class="fa-solid fa-user text-blue-500"></i>
+                    <i class="fa-solid fa-user text-emerald-500"></i>
                     <span id="userIdDisplay" class="truncate max-w-[110px]">내 아이디</span>
                 </button>
 
@@ -91,7 +92,7 @@
         <aside class="w-full md:w-56 flex-shrink-0 space-y-3">
             <div class="flex items-center justify-between px-1">
                 <span class="text-xs font-bold text-slate-400 uppercase tracking-wider">과목 목록</span>
-                <button id="addSubjectBtn" class="text-xs text-blue-600 dark:text-blue-400 font-semibold hover:underline">
+                <button id="addSubjectBtn" class="text-xs text-emerald-600 dark:text-emerald-400 font-semibold hover:underline">
                     + 과목 추가
                 </button>
             </div>
@@ -111,7 +112,7 @@
                     <span id="noteCountBadge" class="text-xs px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 font-medium">0</span>
                 </div>
 
-                <button id="newNoteBtn" class="px-3.5 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs transition flex items-center gap-1.5 shadow-sm">
+                <button id="newNoteBtn" class="px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs transition flex items-center gap-1.5 shadow-sm">
                     <i class="fa-solid fa-plus"></i> 새 노트
                 </button>
             </div>
@@ -126,7 +127,7 @@
                 <i class="fa-solid fa-pen-nib text-slate-300 dark:text-slate-600 text-3xl mb-2"></i>
                 <p class="text-sm font-semibold text-slate-600 dark:text-slate-300">작성된 노트가 없습니다</p>
                 <p class="text-xs text-slate-400 mt-1 mb-4">새 노트를 추가해 암기할 단어나 문장을 작성해보세요.</p>
-                <button id="emptyStateNewBtn" class="px-4 py-1.5 bg-blue-600 text-white rounded-lg text-xs font-semibold">
+                <button id="emptyStateNewBtn" class="px-4 py-1.5 bg-emerald-600 text-white rounded-lg text-xs font-semibold">
                     첫 노트 쓰기
                 </button>
             </div>
@@ -141,7 +142,7 @@
 
                     <!-- Edit / Memorize Switcher -->
                     <div class="flex bg-slate-200 dark:bg-slate-700 p-0.5 rounded-lg text-xs font-semibold">
-                        <button id="modeMemorizeBtn" class="px-3 py-1 rounded-md bg-blue-600 text-white transition">
+                        <button id="modeMemorizeBtn" class="px-3 py-1 rounded-md bg-emerald-600 text-white transition">
                             <i class="fa-solid fa-eye-slash mr-1"></i> 암기 가리기
                         </button>
                         <button id="modeEditBtn" class="px-3 py-1 rounded-md text-slate-600 dark:text-slate-300 transition">
@@ -223,7 +224,7 @@
             <div class="space-y-1">
                 <label class="text-[11px] font-semibold text-slate-400">현재 접속 아이디</label>
                 <div class="flex gap-1.5">
-                    <input id="modalCurrentUserId" type="text" readonly class="flex-1 px-3 py-1.5 text-xs rounded-lg bg-slate-100 dark:bg-slate-700 font-mono font-bold text-blue-600 dark:text-blue-400 border border-slate-200 dark:border-slate-600">
+                    <input id="modalCurrentUserId" type="text" readonly class="flex-1 px-3 py-1.5 text-xs rounded-lg bg-slate-100 dark:bg-slate-700 font-mono font-bold text-emerald-600 dark:text-emerald-400 border border-slate-200 dark:border-slate-600">
                     <button id="copyUserIdBtn" class="px-3 py-1.5 bg-slate-200 dark:bg-slate-600 hover:bg-slate-300 rounded-lg text-xs font-semibold">복사</button>
                 </div>
             </div>
@@ -231,8 +232,8 @@
             <div class="space-y-1 pt-2 border-t border-slate-100 dark:border-slate-700">
                 <label class="text-[11px] font-semibold text-slate-400">다른 아이디로 불러오기 / 접속</label>
                 <div class="flex gap-1.5">
-                    <input id="inputNewUserId" type="text" placeholder="예: my-voca-123" class="flex-1 px-3 py-1.5 text-xs rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-blue-500">
-                    <button id="switchUserIdBtn" class="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold shrink-0">접속하기</button>
+                    <input id="inputNewUserId" type="text" placeholder="예: my-voca-123" class="flex-1 px-3 py-1.5 text-xs rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-100 focus:outline-none focus:border-emerald-500">
+                    <button id="switchUserIdBtn" class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold shrink-0">접속하기</button>
                 </div>
             </div>
         </div>
@@ -244,7 +245,7 @@
             <input id="subjectNameInput" type="text" placeholder="과목명 (예: 토익, 한국사)" class="w-full px-3 py-1.5 text-xs rounded-lg bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-600 text-slate-800 dark:text-slate-100">
             <div class="flex justify-end gap-1.5 pt-1">
                 <button id="cancelSubjectModalBtn" class="px-3 py-1.5 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-200 text-xs font-semibold rounded-lg">취소</button>
-                <button id="confirmSubjectModalBtn" class="px-3 py-1.5 bg-blue-600 text-white text-xs font-semibold rounded-lg">추가</button>
+                <button id="confirmSubjectModalBtn" class="px-3 py-1.5 bg-emerald-600 text-white text-xs font-semibold rounded-lg">추가</button>
             </div>
         </div>
     </div>
@@ -463,7 +464,7 @@
 
                 const item = document.createElement('div');
                 item.className = `group w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-semibold transition cursor-pointer ${
-                    isActive ? 'bg-blue-600 text-white shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                    isActive ? 'bg-emerald-600 text-white shadow-sm' : 'text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
                 }`;
 
                 const isDefault = sub === "전체 과목";
@@ -471,7 +472,7 @@
                 item.innerHTML = `
                     <span class="truncate flex-1 text-left">${escapeHtml(sub)}</span>
                     <div class="flex items-center gap-1.5">
-                        <span class="px-1.5 py-0.2 rounded-full text-[10px] ${isActive ? 'bg-blue-700 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-500'}">${count}</span>
+                        <span class="px-1.5 py-0.2 rounded-full text-[10px] ${isActive ? 'bg-emerald-700 text-white' : 'bg-slate-200 dark:bg-slate-700 text-slate-500'}">${count}</span>
                         ${!isDefault ? `
                             <button class="delete-sub-btn opacity-0 group-hover:opacity-100 text-slate-400 hover:text-rose-500 dark:hover:text-rose-400 p-0.5 rounded transition" title="과목 삭제">
                                 <i class="fa-solid fa-trash-can text-[11px]"></i>
@@ -528,7 +529,7 @@
 
             filtered.forEach(note => {
                 const card = document.createElement('div');
-                card.className = "bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-blue-500 transition cursor-pointer flex flex-col justify-between gap-2";
+                card.className = "bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-emerald-500 transition cursor-pointer flex flex-col justify-between gap-2";
                 
                 const charLen = note.content ? note.content.length : 0;
                 const snippet = note.content ? note.content.replace(/\[\[/g, '').replace(/\]\]/g, '').slice(0, 80) : '내용 없음';
@@ -536,7 +537,7 @@
                 card.innerHTML = `
                     <div>
                         <div class="flex items-center justify-between text-[11px] text-slate-400 mb-1">
-                            <span class="font-semibold text-blue-600 dark:text-blue-400">${escapeHtml(note.subject || '일반')}</span>
+                            <span class="font-semibold text-emerald-600 dark:text-emerald-400">${escapeHtml(note.subject || '일반')}</span>
                             <span>${charLen}자</span>
                         </div>
                         <h3 class="font-bold text-slate-800 dark:text-slate-100 text-sm truncate">${escapeHtml(note.title || '제목 없음')}</h3>
@@ -600,13 +601,13 @@
         function setMode(mode) {
             state.viewMode = mode;
             if (mode === 'edit') {
-                modeEditBtn.className = "px-3 py-1 rounded-md bg-blue-600 text-white transition";
+                modeEditBtn.className = "px-3 py-1 rounded-md bg-emerald-600 text-white transition";
                 modeMemorizeBtn.className = "px-3 py-1 rounded-md text-slate-600 dark:text-slate-300 transition";
                 editorContainer.classList.remove('hidden');
                 memorizeContainer.classList.add('hidden');
                 memorizeToolbar.classList.add('hidden');
             } else {
-                modeMemorizeBtn.className = "px-3 py-1 rounded-md bg-blue-600 text-white transition";
+                modeMemorizeBtn.className = "px-3 py-1 rounded-md bg-emerald-600 text-white transition";
                 modeEditBtn.className = "px-3 py-1 rounded-md text-slate-600 dark:text-slate-300 transition";
                 editorContainer.classList.add('hidden');
                 memorizeContainer.classList.remove('hidden');
