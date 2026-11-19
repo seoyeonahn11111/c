@@ -20,7 +20,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&family=Gowun+Dodum&family=Nanum+Square+Round:wght@400;700&family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.css">
 
     <style>
         body { font-family: 'Pretendard', system-ui, -apple-system, sans-serif; }
@@ -188,6 +189,13 @@
                     <option value="lavender">파스텔 라벤더</option>
                     <option value="mist">포근한 블루그레이</option>
                     <option value="ocean">잔잔한 바다</option>
+                </select>
+                <select id="fontSelector" class="theme-select text-xs font-semibold px-2.5 py-2 rounded-lg max-w-[132px]" aria-label="글꼴 선택">
+                    <option value="pretendard">Pretendard</option>
+                    <option value="nanum">나눔스퀘어라운드</option>
+                    <option value="gowun-dodum">고운돋움</option>
+                    <option value="noto">Noto Sans KR</option>
+                    <option value="gowun-batang">고운바탕</option>
                 </select>
             </div>
         </div>
@@ -952,6 +960,37 @@
                 if (event.key === key && themes.includes(event.newValue)) apply(event.newValue);
             });
         })();
+
+<script>
+    // Shared font preference across both study sites (same browser/origin)
+    (() => {
+        const key = 'study_shared_font';
+        const selector = document.getElementById('fontSelector');
+        const fonts = {
+            'pretendard': "'Pretendard', sans-serif",
+            'nanum': "'Nanum Square Round', sans-serif",
+            'gowun-dodum': "'Gowun Dodum', sans-serif",
+            'noto': "'Noto Sans KR', sans-serif",
+            'gowun-batang': "'Gowun Batang', serif"
+        };
+        const apply = (font) => {
+            const selected = Object.prototype.hasOwnProperty.call(fonts, font) ? font : 'pretendard';
+            document.body.style.fontFamily = fonts[selected];
+            selector.value = selected;
+        };
+        const initial = localStorage.getItem(key) || 'pretendard';
+        if (!localStorage.getItem(key)) localStorage.setItem(key, initial);
+        apply(initial);
+        selector.addEventListener('change', () => {
+            const font = Object.prototype.hasOwnProperty.call(fonts, selector.value) ? selector.value : 'pretendard';
+            localStorage.setItem(key, font);
+            apply(font);
+        });
+        window.addEventListener('storage', (event) => {
+            if (event.key === key && event.newValue) apply(event.newValue);
+        });
+    })();
+</script>
 // Toasts
         function showToast(msg, type = "info") {
             const container = document.getElementById('toastContainer');
