@@ -881,33 +881,26 @@
         };
 
         
-        // Pastel lavender theme toggle (separate from dark mode)
+        
+        // Four gentle pastel themes, stored locally in this browser
         (() => {
             const key = 'voca_color_theme';
-            const btn = document.getElementById('lavenderThemeToggle');
-            const apply = (enabled) => {
-                document.documentElement.classList.toggle('lavender-theme', enabled);
-                btn.querySelector('span').textContent = enabled ? '기본 테마' : '라벤더 테마';
-                btn.title = enabled ? '기본 색상으로 돌아가기' : '포근한 라벤더 색상 적용';
+            const root = document.documentElement;
+            const selector = document.getElementById('themeSelector');
+            const themes = ['soft', 'lavender', 'mist', 'ocean'];
+            const saved = localStorage.getItem(key);
+            const initial = themes.includes(saved) ? saved : 'soft';
+            const apply = (theme) => {
+                themes.forEach(name => root.classList.toggle('theme-' + name, name === theme));
+                selector.value = theme;
             };
-            apply(localStorage.getItem(key) === 'lavender');
-            btn.addEventListener('click', () => {
-                const enabled = !document.documentElement.classList.contains('lavender-theme');
-                localStorage.setItem(key, enabled ? 'lavender' : 'default');
-                apply(enabled);
+            apply(initial);
+            selector.addEventListener('change', () => {
+                const theme = themes.includes(selector.value) ? selector.value : 'soft';
+                localStorage.setItem(key, theme);
+                apply(theme);
             });
         })();
-    
-
-        // Dark mode
-        document.getElementById('themeToggle').onclick = () => {
-            document.documentElement.classList.toggle('dark');
-            localStorage.setItem('voca_theme', document.documentElement.classList.contains('dark') ? 'dark' : 'light');
-        };
-
-        if (localStorage.getItem('voca_theme') === 'dark' || (!('voca_theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark');
-        }
 
         // Toasts
         function showToast(msg, type = "info") {
