@@ -1052,11 +1052,18 @@
         modeMemorizeBtn.onclick = () => setMode('memorize');
 
         document.getElementById('hideAllMasksBtn').onclick = () => {
-            document.querySelectorAll('#memorizeContainer .mask-box').forEach(el => el.classList.remove('revealed'));
+            document.querySelectorAll('#memorizeContainer .mask-box').forEach(el => {
+                el.classList.remove('revealed');
+                const full = el.dataset.fullText || el.textContent;
+                el.textContent = document.getElementById('initialsOnlyToggle').checked ? getHangulInitials(full) : full;
+            });
         };
 
         document.getElementById('revealAllMasksBtn').onclick = () => {
-            document.querySelectorAll('#memorizeContainer .mask-box').forEach(el => el.classList.add('revealed'));
+            document.querySelectorAll('#memorizeContainer .mask-box').forEach(el => {
+                el.classList.add('revealed');
+                el.textContent = el.dataset.fullText || el.textContent;
+            });
         };
 
         document.getElementById('initialsOnlyToggle').onchange = () => {
