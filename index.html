@@ -54,6 +54,7 @@
             box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.12);
         }
         .mask-box:hover { background-color: #64748b; }
+        .mask-box.initials-preview { color:#475569 !important; background-color:#e2e8f0 !important; font-weight:600; }
         
         .mask-box.revealed {
             background-color: #d1fae5 !important;
@@ -805,14 +806,17 @@
             span.dataset.fullText = text;
             const initialsOnly = document.getElementById('initialsOnlyToggle')?.checked;
             span.textContent = initialsOnly ? getHangulInitials(text) : text;
+            span.classList.toggle('initials-preview', !!initialsOnly);
             span.title = "클릭하여 정답 확인 / 다시 가리기";
 
             span.onclick = (e) => {
                 e.stopPropagation();
                 const revealed = span.classList.toggle('revealed');
+                const initialsOnly = document.getElementById('initialsOnlyToggle')?.checked;
+                span.classList.toggle('initials-preview', !revealed && !!initialsOnly);
                 span.textContent = revealed
                     ? span.dataset.fullText
-                    : (document.getElementById('initialsOnlyToggle')?.checked ? getHangulInitials(span.dataset.fullText) : span.dataset.fullText);
+                    : (initialsOnly ? getHangulInitials(span.dataset.fullText) : span.dataset.fullText);
             };
             return span;
         }
@@ -1053,7 +1057,9 @@
             document.querySelectorAll('#memorizeContainer .mask-box').forEach(el => {
                 el.classList.remove('revealed');
                 const full = el.dataset.fullText || el.textContent;
-                el.textContent = document.getElementById('initialsOnlyToggle').checked ? getHangulInitials(full) : full;
+                const initialsOnly = document.getElementById('initialsOnlyToggle').checked;
+                el.classList.toggle('initials-preview', initialsOnly);
+                el.textContent = initialsOnly ? getHangulInitials(full) : full;
             });
         };
 
@@ -1066,7 +1072,13 @@
 
         document.getElementById('initialsOnlyToggle').onchange = () => {
             if (!editorContainer.classList.contains('hidden')) return;
-            renderMaskedContent();
+            const initialsOnly = document.getElementById('initialsOnlyToggle').checked;
+            document.querySelectorAll('#memorizeContainer .mask-box').forEach(el => {
+                const full = el.dataset.fullText || el.textContent;
+                const revealed = el.classList.contains('revealed');
+                el.classList.toggle('initials-preview', initialsOnly && !revealed);
+                el.textContent = revealed ? full : (initialsOnly ? getHangulInitials(full) : full);
+            });
         };
 
         noteContentInput.oninput = updateWordCount;
