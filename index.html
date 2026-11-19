@@ -58,7 +58,7 @@
         
         .mask-box.revealed {
             background-color: #d1fae5 !important;
-            color: #047857 !important;
+            color:var(--initials-preview-color, #71876d) !important;
             font-weight: 600;
             box-shadow: none;
         }
@@ -175,6 +175,23 @@
         html.theme-ocean .mask-box:hover { background:#b1d2d3 !important; }
         html.theme-ocean .mask-box.revealed { background:#e2f0ed !important; color:#5d8993 !important; }
         html.theme-ocean .mask-box, html.theme-ocean .mask-box.revealed { box-shadow:inset 0 1px 2px rgba(80,120,120,.07) !important; }
+        /* Keep masked, initials-preview, and revealed boxes within each theme palette */
+        html.theme-soft .mask-box, body.theme-soft .mask-box { background:#dce7d5 !important; }
+        html.theme-soft .mask-box:hover, body.theme-soft .mask-box:hover { background:#cfddc6 !important; }
+        html.theme-soft .mask-box.initials-preview, body.theme-soft .mask-box.initials-preview,
+        html.theme-soft .mask-box.revealed, body.theme-soft .mask-box.revealed { background:#e7efdf !important; }
+        html.theme-lavender .mask-box, body.theme-lavender .mask-box { background:#ded3e8 !important; }
+        html.theme-lavender .mask-box:hover, body.theme-lavender .mask-box:hover { background:#d2c4df !important; }
+        html.theme-lavender .mask-box.initials-preview, body.theme-lavender .mask-box.initials-preview,
+        html.theme-lavender .mask-box.revealed, body.theme-lavender .mask-box.revealed { background:#eee5f4 !important; }
+        html.theme-mist .mask-box, body.theme-mist .mask-box { background:#cbd7df !important; }
+        html.theme-mist .mask-box:hover, body.theme-mist .mask-box:hover { background:#b7c7d1 !important; }
+        html.theme-mist .mask-box.initials-preview, body.theme-mist .mask-box.initials-preview,
+        html.theme-mist .mask-box.revealed, body.theme-mist .mask-box.revealed { background:#e1e9ee !important; }
+        html.theme-ocean .mask-box, body.theme-ocean .mask-box { background:#c4dfe0 !important; }
+        html.theme-ocean .mask-box:hover, body.theme-ocean .mask-box:hover { background:#b1d2d3 !important; }
+        html.theme-ocean .mask-box.initials-preview, body.theme-ocean .mask-box.initials-preview,
+        html.theme-ocean .mask-box.revealed, body.theme-ocean .mask-box.revealed { background:#e2f0ed !important; }
         /* Theme-matched checkbox and initials preview text */
         html.theme-soft #initialsOnlyToggle, body.theme-soft #initialsOnlyToggle { accent-color:#879b78; }
         html.theme-lavender #initialsOnlyToggle, body.theme-lavender #initialsOnlyToggle { accent-color:#9b83b4; }
@@ -830,7 +847,7 @@
                 const initialsOnly = document.getElementById('initialsOnlyToggle')?.checked;
                 const showInitials = !!initialsOnly && !revealed;
                 span.classList.toggle('initials-preview', showInitials);
-                span.style.setProperty('color', revealed ? '#047857' : (showInitials ? getThemeMaskTextColor() : 'transparent'), 'important');
+                span.style.setProperty('color', revealed ? getThemeMaskTextColor() : (showInitials ? getThemeMaskTextColor() : 'transparent'), 'important');
                 span.textContent = revealed
                     ? span.dataset.fullText
                     : (initialsOnly ? getHangulInitials(span.dataset.fullText) : span.dataset.fullText);
@@ -1086,7 +1103,7 @@
                 el.classList.add('revealed');
                 el.classList.remove('initials-preview');
                 el.textContent = el.dataset.fullText || el.textContent;
-                el.style.setProperty('color', '#047857', 'important');
+                el.style.setProperty('color', getThemeMaskTextColor(), 'important');
             });
         };
 
