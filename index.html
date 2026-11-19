@@ -4,6 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>단어 암기 노트</title>
+    <script>
+        // Apply the saved shared theme before styles are painted to avoid a default-theme flash.
+        (() => {
+            try {
+                const valid = ['soft', 'lavender', 'mist', 'ocean'];
+                const saved = localStorage.getItem('study_shared_theme') || localStorage.getItem('voca_color_theme') || 'soft';
+                const theme = valid.includes(saved) ? saved : 'soft';
+                valid.forEach(name => document.documentElement.classList.toggle('theme-' + name, name === theme));
+            } catch (_) {}
+        })();
+    </script>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -293,7 +304,11 @@
                 <!-- Memorize Action Bar (Shown in Memorize Mode) -->
                 <div id="memorizeToolbar" class="px-4 py-2 bg-slate-100 border-b border-slate-200 flex items-center justify-between text-xs">
                     <span class="text-slate-500 font-medium hidden sm:inline">회색 상자를 누르면 내용이 드러납니다</span>
-                    <div class="flex items-center gap-1.5 ml-auto">
+                    <div class="flex items-center gap-2 ml-auto">
+                        <label class="flex items-center gap-1.5 text-slate-600 font-medium whitespace-nowrap cursor-pointer">
+                            <input id="initialsOnlyToggle" type="checkbox" class="accent-emerald-600">
+                            초성만 보기
+                        </label>
                         <button id="hideAllMasksBtn" class="px-2.5 py-1 bg-white border border-slate-200 rounded text-slate-700 font-medium hover:bg-slate-50">
                             모두 가리기
                         </button>
@@ -775,15 +790,29 @@
             }
         }
 
+        function getHangulInitials(text) {
+            const initials = ['ㄱ','ㄲ','ㄴ','ㄷ','ㄸ','ㄹ','ㅁ','ㅂ','ㅃ','ㅅ','ㅆ','ㅇ','ㅈ','ㅉ','ㅊ','ㅋ','ㅌ','ㅍ','ㅎ'];
+            return Array.from(text).map(char => {
+                const code = char.charCodeAt(0) - 0xAC00;
+                if (code >= 0 && code <= 11171) return initials[Math.floor(code / 588)];
+                return char;
+            }).join('');
+        }
+
         function createMaskBoxElement(text) {
             const span = document.createElement('span');
             span.className = 'mask-box';
-            span.textContent = text;
-            span.title = "클릭하여 확인 / 다시 가리기";
+            span.dataset.fullText = text;
+            const initialsOnly = document.getElementById('initialsOnlyToggle')?.checked;
+            span.textContent = initialsOnly ? getHangulInitials(text) : text;
+            span.title = "클릭하여 정답 확인 / 다시 가리기";
 
             span.onclick = (e) => {
                 e.stopPropagation();
-                span.classList.toggle('revealed');
+                const revealed = span.classList.toggle('revealed');
+                span.textContent = revealed
+                    ? span.dataset.fullText
+                    : (document.getElementById('initialsOnlyToggle')?.checked ? getHangulInitials(span.dataset.fullText) : span.dataset.fullText);
             };
             return span;
         }
@@ -1028,6 +1057,11 @@
 
         document.getElementById('revealAllMasksBtn').onclick = () => {
             document.querySelectorAll('#memorizeContainer .mask-box').forEach(el => el.classList.add('revealed'));
+        };
+
+        document.getElementById('initialsOnlyToggle').onchange = () => {
+            if (!editorContainer.classList.contains('hidden')) return;
+            renderMaskedContent();
         };
 
         noteContentInput.oninput = updateWordCount;
