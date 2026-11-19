@@ -192,6 +192,15 @@
         html.theme-ocean .mask-box:hover, body.theme-ocean .mask-box:hover { background:#b1d2d3 !important; }
         html.theme-ocean .mask-box.initials-preview, body.theme-ocean .mask-box.initials-preview,
         html.theme-ocean .mask-box.revealed, body.theme-ocean .mask-box.revealed { background:#e2f0ed !important; }
+        /* Text colors follow the active theme automatically, including after theme changes */
+        html.theme-soft .mask-box.initials-preview, body.theme-soft .mask-box.initials-preview,
+        html.theme-soft .mask-box.revealed, body.theme-soft .mask-box.revealed { color:#71876d !important; }
+        html.theme-lavender .mask-box.initials-preview, body.theme-lavender .mask-box.initials-preview,
+        html.theme-lavender .mask-box.revealed, body.theme-lavender .mask-box.revealed { color:#806d96 !important; }
+        html.theme-mist .mask-box.initials-preview, body.theme-mist .mask-box.initials-preview,
+        html.theme-mist .mask-box.revealed, body.theme-mist .mask-box.revealed { color:#637f90 !important; }
+        html.theme-ocean .mask-box.initials-preview, body.theme-ocean .mask-box.initials-preview,
+        html.theme-ocean .mask-box.revealed, body.theme-ocean .mask-box.revealed { color:#5d8993 !important; }
         /* Theme-matched checkbox and initials preview text */
         html.theme-soft #initialsOnlyToggle, body.theme-soft #initialsOnlyToggle { accent-color:#879b78; }
         html.theme-lavender #initialsOnlyToggle, body.theme-lavender #initialsOnlyToggle { accent-color:#9b83b4; }
@@ -838,7 +847,6 @@
             const initialsOnly = document.getElementById('initialsOnlyToggle')?.checked;
             span.textContent = initialsOnly ? getHangulInitials(text) : text;
             span.classList.toggle('initials-preview', !!initialsOnly);
-            span.style.setProperty('color', initialsOnly ? getThemeMaskTextColor() : 'transparent', 'important');
             span.title = "클릭하여 정답 확인 / 다시 가리기";
 
             span.onclick = (e) => {
@@ -847,7 +855,6 @@
                 const initialsOnly = document.getElementById('initialsOnlyToggle')?.checked;
                 const showInitials = !!initialsOnly && !revealed;
                 span.classList.toggle('initials-preview', showInitials);
-                span.style.setProperty('color', revealed ? getThemeMaskTextColor() : (showInitials ? getThemeMaskTextColor() : 'transparent'), 'important');
                 span.textContent = revealed
                     ? span.dataset.fullText
                     : (initialsOnly ? getHangulInitials(span.dataset.fullText) : span.dataset.fullText);
@@ -1094,7 +1101,6 @@
                 const initialsOnly = document.getElementById('initialsOnlyToggle').checked;
                 el.classList.toggle('initials-preview', initialsOnly);
                 el.textContent = initialsOnly ? getHangulInitials(full) : full;
-                el.style.setProperty('color', initialsOnly ? getThemeMaskTextColor() : 'transparent', 'important');
             });
         };
 
@@ -1103,7 +1109,6 @@
                 el.classList.add('revealed');
                 el.classList.remove('initials-preview');
                 el.textContent = el.dataset.fullText || el.textContent;
-                el.style.setProperty('color', getThemeMaskTextColor(), 'important');
             });
         };
 
@@ -1115,7 +1120,6 @@
                 const showInitials = initialsOnly && !revealed;
                 el.classList.toggle('initials-preview', showInitials);
                 el.textContent = revealed ? full : (showInitials ? getHangulInitials(full) : full);
-                el.style.setProperty('color', revealed ? '#047857' : (showInitials ? getThemeMaskTextColor() : 'transparent'), 'important');
             });
         };
 
