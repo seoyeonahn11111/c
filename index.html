@@ -57,6 +57,21 @@
             background-color: #1e293b !important;
             color: #6ee7b7 !important;
         }
+    
+        /* Cozy pastel lavender theme; dark mode remains unchanged */
+        html.lavender-theme:not(.dark) body { background:#f8f5fb !important; color:#51485b !important; }
+        html.lavender-theme:not(.dark) header { background:#fffdfa !important; border-color:#e8ddec !important; }
+        html.lavender-theme:not(.dark) .bg-white,
+        html.lavender-theme:not(.dark) .bg-white\/90 { background-color:#fffdfa !important; }
+        html.lavender-theme:not(.dark) [class*="border-yellow-"] { border-color:#e8ddec !important; }
+        html.lavender-theme:not(.dark) [class*="bg-yellow-"] { background-color:#f4eee5 !important; }
+        html.lavender-theme:not(.dark) [class*="bg-emerald-"] { background-color:#b9a4cf !important; }
+        html.lavender-theme:not(.dark) [class*="hover:bg-emerald-"]:hover { background-color:#a58cbe !important; }
+        html.lavender-theme:not(.dark) [class*="text-emerald-"] { color:#8b70a5 !important; }
+        html.lavender-theme:not(.dark) [class*="border-emerald-"] { border-color:#d9c9e4 !important; }
+        html.lavender-theme:not(.dark) .mask-box.revealed { background:#eee5f4 !important; color:#806d96 !important; }
+        html.lavender-theme:not(.dark) .theme-toggle-btn { background:#f1eaf5 !important; color:#806d96 !important; border:1px solid #e2d5eb !important; }
+    
     </style>
 </head>
 <body class="bg-[#fffdf0] dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-full flex flex-col transition-colors">
@@ -78,6 +93,7 @@
                 </button>
 
                 <!-- Dark Mode Toggle -->
+                <button id="lavenderThemeToggle" class="theme-toggle-btn flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition whitespace-nowrap" type="button"><i class="fa-solid fa-palette"></i><span>라벤더 테마</span></button>
                 <button id="themeToggle" class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-500 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-700">
                     <i class="fa-solid fa-moon dark:hidden"></i>
                     <i class="fa-solid fa-sun hidden dark:block"></i>
@@ -818,6 +834,25 @@
             renderAll();
             showToast("과목이 삭제되었습니다.", "info");
         };
+
+        
+        // Pastel lavender theme toggle (separate from dark mode)
+        (() => {
+            const key = 'voca_color_theme';
+            const btn = document.getElementById('lavenderThemeToggle');
+            const apply = (enabled) => {
+                document.documentElement.classList.toggle('lavender-theme', enabled);
+                btn.querySelector('span').textContent = enabled ? '기본 테마' : '라벤더 테마';
+                btn.title = enabled ? '기본 색상으로 돌아가기' : '포근한 라벤더 색상 적용';
+            };
+            apply(localStorage.getItem(key) === 'lavender');
+            btn.addEventListener('click', () => {
+                const enabled = !document.documentElement.classList.contains('lavender-theme');
+                localStorage.setItem(key, enabled ? 'lavender' : 'default');
+                apply(enabled);
+            });
+        })();
+    
 
         // Dark mode
         document.getElementById('themeToggle').onclick = () => {
