@@ -49,11 +49,6 @@
             font-weight: 600;
             box-shadow: none;
         }
-            background-color: #1e293b !important;
-            color: #6ee7b7 !important;
-        }
-    
-        
         /* Soft, low-contrast pastel palettes */
         .theme-select { background:#fffdfa; color:#756c77; border:1px solid #e8dfeb; outline:none; }
         .theme-select:focus { box-shadow:0 0 0 2px rgba(185,164,207,.22); }
@@ -116,6 +111,57 @@
         body.theme-ocean .theme-select, html.theme-ocean .theme-select { background:#f1f6f5; border-color:#d7e5e4; color:#66838d; }
 
     
+    
+        /* More distinct blue-grey and seaside palettes */
+        body.theme-mist, html.theme-mist body { background:#e9eef2 !important; color:#566773 !important; }
+        body.theme-mist header, html.theme-mist header { background:rgba(247,249,251,.97) !important; border-color:#d2dce3 !important; }
+        body.theme-mist .bg-white, body.theme-mist .bg-white\/90, html.theme-mist .bg-white, html.theme-mist .bg-white\/90 { background:#f7f9fa !important; }
+        body.theme-mist [class*="bg-yellow-"], html.theme-mist [class*="bg-yellow-"] { background:#e2e9ed !important; }
+        body.theme-mist [class*="border-yellow-"], html.theme-mist [class*="border-yellow-"] { border-color:#d1dce3 !important; }
+        body.theme-mist [class*="bg-emerald-"], html.theme-mist [class*="bg-emerald-"] { background:#aebfca !important; }
+        body.theme-mist [class*="hover:bg-emerald-"]:hover, html.theme-mist [class*="hover:bg-emerald-"]:hover { background:#9eB2bf !important; }
+        body.theme-mist [class*="text-emerald-"], html.theme-mist [class*="text-emerald-"] { color:#647f8f !important; }
+        body.theme-mist [class*="border-emerald-"], html.theme-mist [class*="border-emerald-"] { border-color:#cbd8df !important; }
+
+        body.theme-ocean, html.theme-ocean body {
+            background-color:#f9fcfb !important; color:#526b72 !important;
+            background-image:linear-gradient(145deg,rgba(224,240,239,.7),rgba(250,252,249,.88) 46%,rgba(242,233,216,.52)) !important;
+        }
+        body.theme-ocean header, html.theme-ocean header { background:rgba(255,255,253,.98) !important; border-color:#dcebe8 !important; }
+        body.theme-ocean .bg-white, body.theme-ocean .bg-white\/90, html.theme-ocean .bg-white, html.theme-ocean .bg-white\/90 { background:#fffefd !important; }
+        body.theme-ocean [class*="bg-yellow-"], html.theme-ocean [class*="bg-yellow-"] { background:#f1eadd !important; }
+        body.theme-ocean [class*="border-yellow-"], html.theme-ocean [class*="border-yellow-"] { border-color:#e6dfd1 !important; }
+        body.theme-ocean [class*="bg-emerald-"], html.theme-ocean [class*="bg-emerald-"] { background:#a9cbd0 !important; }
+        body.theme-ocean [class*="hover:bg-emerald-"]:hover, html.theme-ocean [class*="hover:bg-emerald-"]:hover { background:#98bdc4 !important; }
+        body.theme-ocean [class*="text-emerald-"], html.theme-ocean [class*="text-emerald-"] { color:#5d8993 !important; }
+        body.theme-ocean [class*="border-emerald-"], html.theme-ocean [class*="border-emerald-"] { border-color:#cfe1df !important; }
+        body.theme-ocean [class*="bg-rose-"], html.theme-ocean [class*="bg-rose-"] { background:#f4e8e3 !important; }
+        body.theme-ocean [class*="text-rose-"], html.theme-ocean [class*="text-rose-"] { color:#bd8d83 !important; }
+        body.theme-ocean [class*="border-rose-"], html.theme-ocean [class*="border-rose-"] { border-color:#ead9d2 !important; }
+        body.theme-ocean [class*="bg-amber-"], html.theme-ocean [class*="bg-amber-"] { background:#e8d8bd !important; }
+        body.theme-ocean [class*="text-amber-"], html.theme-ocean [class*="text-amber-"] { color:#927b5d !important; }
+        body.theme-ocean .drag-over, html.theme-ocean .drag-over { background:#e5f1ef !important; border-color:#a4c7cc !important; }
+        body.theme-ocean .lcd-screen, html.theme-ocean .lcd-screen { background:#edf6f4 !important; border-color:#cbdedc !important; box-shadow:inset 0 0 12px rgba(117,167,172,.14),0 2px 8px rgba(0,0,0,.025) !important; }
+
+        body.theme-soft .mask-box.revealed, html.theme-soft .mask-box.revealed { background:#e7efdf !important; color:#71876d !important; }
+        body.theme-lavender .mask-box.revealed, html.theme-lavender .mask-box.revealed { background:#eee5f4 !important; color:#806d96 !important; }
+        body.theme-mist .mask-box, html.theme-mist .mask-box { background:#cbd7df !important; }
+        body.theme-mist .mask-box:hover, html.theme-mist .mask-box:hover { background:#b7c7d1 !important; }
+        body.theme-mist .mask-box.revealed, html.theme-mist .mask-box.revealed { background:#e1e9ee !important; color:#637b89 !important; }
+        body.theme-ocean .mask-box, html.theme-ocean .mask-box { background:#c4dfe0 !important; }
+        body.theme-ocean .mask-box:hover, html.theme-ocean .mask-box:hover { background:#b1d2d3 !important; }
+        body.theme-ocean .mask-box.revealed, html.theme-ocean .mask-box.revealed { background:#e2f0ed !important; color:#5d8993 !important; }
+        body.theme-ocean .mask-box, body.theme-ocean .mask-box.revealed, html.theme-ocean .mask-box, html.theme-ocean .mask-box.revealed { box-shadow:inset 0 1px 2px rgba(80,120,120,.07) !important; }
+
+        html.theme-soft .mask-box.revealed { background:#e7efdf !important; color:#71876d !important; }
+        html.theme-lavender .mask-box.revealed { background:#eee5f4 !important; color:#806d96 !important; }
+        html.theme-mist .mask-box { background:#cbd7df !important; }
+        html.theme-mist .mask-box:hover { background:#b7c7d1 !important; }
+        html.theme-mist .mask-box.revealed { background:#e1e9ee !important; color:#637b89 !important; }
+        html.theme-ocean .mask-box { background:#c4dfe0 !important; }
+        html.theme-ocean .mask-box:hover { background:#b1d2d3 !important; }
+        html.theme-ocean .mask-box.revealed { background:#e2f0ed !important; color:#5d8993 !important; }
+        html.theme-ocean .mask-box, html.theme-ocean .mask-box.revealed { box-shadow:inset 0 1px 2px rgba(80,120,120,.07) !important; }
     </style>
 </head>
 <body class="bg-[#fffdf0] text-slate-800 min-h-full flex flex-col transition-colors">
@@ -882,27 +928,31 @@
 
         
         
-        // Four gentle pastel themes, stored locally in this browser
+        
+        // Shared theme preference across both study sites (same browser/origin)
         (() => {
-            const key = 'voca_color_theme';
+            const key = 'study_shared_theme';
             const root = document.documentElement;
             const selector = document.getElementById('themeSelector');
             const themes = ['soft', 'lavender', 'mist', 'ocean'];
-            const saved = localStorage.getItem(key);
+            const saved = localStorage.getItem(key) || localStorage.getItem('voca_color_theme');
             const initial = themes.includes(saved) ? saved : 'soft';
             const apply = (theme) => {
                 themes.forEach(name => root.classList.toggle('theme-' + name, name === theme));
                 selector.value = theme;
             };
+            if (!localStorage.getItem(key)) localStorage.setItem(key, initial);
             apply(initial);
             selector.addEventListener('change', () => {
                 const theme = themes.includes(selector.value) ? selector.value : 'soft';
                 localStorage.setItem(key, theme);
                 apply(theme);
             });
+            window.addEventListener('storage', (event) => {
+                if (event.key === key && themes.includes(event.newValue)) apply(event.newValue);
+            });
         })();
-
-        // Toasts
+// Toasts
         function showToast(msg, type = "info") {
             const container = document.getElementById('toastContainer');
             const toast = document.createElement('div');
