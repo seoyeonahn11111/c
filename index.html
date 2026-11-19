@@ -54,7 +54,7 @@
             box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.12);
         }
         .mask-box:hover { background-color: #64748b; }
-        .mask-box.initials-preview { color:#475569 !important; background-color:#e2e8f0 !important; font-weight:600; }
+        .mask-box.initials-preview { color:var(--initials-preview-color, #71876d) !important; background-color:#e2e8f0 !important; font-weight:600; }
         
         .mask-box.revealed {
             background-color: #d1fae5 !important;
@@ -175,6 +175,11 @@
         html.theme-ocean .mask-box:hover { background:#b1d2d3 !important; }
         html.theme-ocean .mask-box.revealed { background:#e2f0ed !important; color:#5d8993 !important; }
         html.theme-ocean .mask-box, html.theme-ocean .mask-box.revealed { box-shadow:inset 0 1px 2px rgba(80,120,120,.07) !important; }
+        /* Theme-matched checkbox and initials preview text */
+        html.theme-soft #initialsOnlyToggle, body.theme-soft #initialsOnlyToggle { accent-color:#879b78; }
+        html.theme-lavender #initialsOnlyToggle, body.theme-lavender #initialsOnlyToggle { accent-color:#9b83b4; }
+        html.theme-mist #initialsOnlyToggle, body.theme-mist #initialsOnlyToggle { accent-color:#718b9b; }
+        html.theme-ocean #initialsOnlyToggle, body.theme-ocean #initialsOnlyToggle { accent-color:#5d9298; }
     </style>
 </head>
 <body class="bg-[#fffdf0] text-slate-800 min-h-full flex flex-col transition-colors">
@@ -800,6 +805,15 @@
             }).join('');
         }
 
+        function getThemeMaskTextColor() {
+            const root = document.documentElement;
+            const body = document.body;
+            if (root.classList.contains('theme-lavender') || body.classList.contains('theme-lavender')) return '#806d96';
+            if (root.classList.contains('theme-mist') || body.classList.contains('theme-mist')) return '#637f90';
+            if (root.classList.contains('theme-ocean') || body.classList.contains('theme-ocean')) return '#5d8993';
+            return '#71876d';
+        }
+
         function createMaskBoxElement(text) {
             const span = document.createElement('span');
             span.className = 'mask-box';
@@ -807,7 +821,7 @@
             const initialsOnly = document.getElementById('initialsOnlyToggle')?.checked;
             span.textContent = initialsOnly ? getHangulInitials(text) : text;
             span.classList.toggle('initials-preview', !!initialsOnly);
-            span.style.setProperty('color', initialsOnly ? '#475569' : 'transparent', 'important');
+            span.style.setProperty('color', initialsOnly ? getThemeMaskTextColor() : 'transparent', 'important');
             span.title = "클릭하여 정답 확인 / 다시 가리기";
 
             span.onclick = (e) => {
@@ -816,7 +830,7 @@
                 const initialsOnly = document.getElementById('initialsOnlyToggle')?.checked;
                 const showInitials = !!initialsOnly && !revealed;
                 span.classList.toggle('initials-preview', showInitials);
-                span.style.setProperty('color', revealed ? '#047857' : (showInitials ? '#475569' : 'transparent'), 'important');
+                span.style.setProperty('color', revealed ? '#047857' : (showInitials ? getThemeMaskTextColor() : 'transparent'), 'important');
                 span.textContent = revealed
                     ? span.dataset.fullText
                     : (initialsOnly ? getHangulInitials(span.dataset.fullText) : span.dataset.fullText);
@@ -1063,7 +1077,7 @@
                 const initialsOnly = document.getElementById('initialsOnlyToggle').checked;
                 el.classList.toggle('initials-preview', initialsOnly);
                 el.textContent = initialsOnly ? getHangulInitials(full) : full;
-                el.style.setProperty('color', initialsOnly ? '#475569' : 'transparent', 'important');
+                el.style.setProperty('color', initialsOnly ? getThemeMaskTextColor() : 'transparent', 'important');
             });
         };
 
@@ -1084,7 +1098,7 @@
                 const showInitials = initialsOnly && !revealed;
                 el.classList.toggle('initials-preview', showInitials);
                 el.textContent = revealed ? full : (showInitials ? getHangulInitials(full) : full);
-                el.style.setProperty('color', revealed ? '#047857' : (showInitials ? '#475569' : 'transparent'), 'important');
+                el.style.setProperty('color', revealed ? '#047857' : (showInitials ? getThemeMaskTextColor() : 'transparent'), 'important');
             });
         };
 
