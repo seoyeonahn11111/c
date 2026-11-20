@@ -234,10 +234,23 @@
                 white-space: nowrap;
             }
             header > div > div:nth-child(2) {
+                position: relative;
+                z-index: 2;
                 width: 100%;
                 display: grid;
                 grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
                 gap: 0.4rem;
+                pointer-events: auto;
+            }
+            header > div > div:nth-child(2) > :not([hidden]) ~ :not([hidden]) {
+                margin-left: 0;
+            }
+            header > div > div:nth-child(2) > a,
+            header > div > div:nth-child(2) > button,
+            header > div > div:nth-child(2) > select {
+                position: relative;
+                z-index: 1;
+                pointer-events: auto;
             }
             header > div > div:nth-child(2) > a,
             header > div > div:nth-child(2) > button,
