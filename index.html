@@ -206,62 +206,54 @@
         html.theme-lavender #initialsOnlyToggle, body.theme-lavender #initialsOnlyToggle { accent-color:#9b83b4; }
         html.theme-mist #initialsOnlyToggle, body.theme-mist #initialsOnlyToggle { accent-color:#718b9b; }
         html.theme-ocean #initialsOnlyToggle, body.theme-ocean #initialsOnlyToggle { accent-color:#5d9298; }
-        /* Mobile-only refinement for the title area; leave all other header controls unchanged */
-        @media (max-width: 480px) {
+        /* Match the planner header's responsive wrapping so controls never overlap */
+        @media (max-width: 1023px) {
             header > div {
-                height: auto;
+                height: auto !important;
                 min-height: 3.5rem;
-                flex-direction: column;
-                align-items: stretch;
-                justify-content: flex-start;
-                gap: 0.55rem;
-                padding-top: 0.65rem;
-                padding-bottom: 0.65rem;
+                padding-top: 0.75rem;
+                padding-bottom: 0.75rem;
+                flex-wrap: wrap;
+                row-gap: 0.75rem;
+            }
+            header > div > div:last-child {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 0.5rem;
+                max-width: 100%;
+            }
+            header > div > div:last-child > :not([hidden]) ~ :not([hidden]) {
+                margin-left: 0;
+            }
+        }
+        @media (max-width: 640px) {
+            header > div {
+                padding-left: 1rem;
+                padding-right: 1rem;
             }
             header > div > div:first-child {
-                flex: 0 0 auto;
-                gap: 0.35rem;
                 min-width: 0;
-                width: 100%;
-            }
-            header > div > div:first-child > i {
-                font-size: 1rem;
-                flex: 0 0 auto;
             }
             header > div > div:first-child > span {
-                font-size: 0.875rem;
+                font-size: 1rem;
                 letter-spacing: -0.025em;
                 white-space: nowrap;
             }
-            header > div > div:nth-child(2) {
-                position: relative;
-                z-index: 2;
+            header > div > div:last-child {
                 width: 100%;
-                display: grid;
-                grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-                gap: 0.4rem;
-                pointer-events: auto;
+                align-items: center;
             }
-            header > div > div:nth-child(2) > :not([hidden]) ~ :not([hidden]) {
-                margin-left: 0;
-            }
-            header > div > div:nth-child(2) > a,
-            header > div > div:nth-child(2) > button,
-            header > div > div:nth-child(2) > select {
-                position: relative;
-                z-index: 1;
-                pointer-events: auto;
-            }
-            header > div > div:nth-child(2) > a,
-            header > div > div:nth-child(2) > button,
-            header > div > div:nth-child(2) > select {
+            header > div > div:last-child > select,
+            header > div > div:last-child > button {
+                flex: 1 1 7.5rem;
                 min-width: 0;
-                width: 100%;
                 max-width: none;
-                justify-content: center;
+            }
+            header > div > div:last-child > a {
+                flex: 1 1 100%;
+                text-align: center;
             }
         }
-
     </style>
 </head>
 <body class="bg-[#fffdf0] text-slate-800 min-h-full flex flex-col transition-colors">
